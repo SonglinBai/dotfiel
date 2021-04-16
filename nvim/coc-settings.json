@@ -1,6 +1,9 @@
 {
-    "diagnostic.displayByAle": true,
     "explorer.icon.enableNerdfont": true,
+    "diagnostic.errorSign": "\u2718",
+    "diagnostic.warningSign": "\u26a0",
+    "diagnostic.infoSign": "\u1f6c8",
+    "diagnostic.hintSign": "\u1f4a1",
     "languageserver": {
         "ccls": {
             "command": "ccls",

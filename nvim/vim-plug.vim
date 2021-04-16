@@ -1,8 +1,6 @@
 call plug#begin()
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'dense-analysis/ale'
 Plug 'itchyny/lightline.vim'
-Plug 'maximbaz/lightline-ale'
 Plug 'mengelbrecht/lightline-bufferline'
 Plug 'morhetz/gruvbox'
 Plug 'ayu-theme/ayu-vim'
@@ -12,21 +10,18 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/nerdcommenter'
 Plug 'mbbill/undotree'
+Plug 'easymotion/vim-easymotion'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch-easymotion.vim'
 call plug#end()
-
-let g:ale_disable_lsp = 1
-
-let g:ale_linters = {
-            \'c': ['clangd'],
-            \'cpp': ['clangd'],
-            \}
-let g:ale_sign_error = '✗'
-let g:ale_sign_warning = ''
 
 set showtabline=1
 
 set termguicolors
 colorscheme gruvbox
+
+let g:coc_status_error_sign="\u2718"
+let g:coc_status_warning_sign="\u26a0"
 
 let g:lightline#bufferline#read_only=' '
 let g:lightline#bufferline#modified=' '
@@ -48,7 +43,7 @@ let g:lightline = {
       \ },
       \ 'active': {
       \     'left': [['mode','paste'], ['winnr'], ['buffers']],
-      \     'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+      \     'right': [['cocstatus'],
       \               ['lineinfo'],
       \               ['percent'],
       \               ['fileencoding','filetype']]
@@ -66,11 +61,6 @@ let g:lightline = {
       \ },
       \ 'component_expand': {
       \     'buffers': 'lightline#bufferline#buffers',
-      \     'linter_checking': 'lightline#ale#checking',
-      \     'linter_infos': 'lightline#ale#infos',
-      \     'linter_warnings': 'lightline#ale#warnings',
-      \     'linter_errors': 'lightline#ale#errors',
-      \     'linter_ok': 'lightline#ale#ok',
       \ },
       \ 'component_type': {
       \     'buffers': 'tabsel',
@@ -81,15 +71,9 @@ let g:lightline = {
       \     'linter_ok': 'right'
       \ },
       \ 'component_function': {
+      \     'cocstatus': 'coc#status'
       \ }
       \ }
-
-let g:lightline#ale#indicator_checking = ""
-let g:lightline#ale#indicator_infos = ""
-let g:lightline#ale#indicator_warnings = ""
-let g:lightline#ale#indicator_errors = "✗"
-let g:lightline#ale#indicator_ok = ""
-
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -209,7 +193,7 @@ nnoremap <silent> <space>y  :<C-u>CocList -A --normal yank<cr>
 nnoremap <silent> <Leader>lc :<C-u>CocList -A --normal commands<cr>
 nnoremap <silent> <Leader>lt :<C-u>CocList tasks<cr>
 nnoremap <silent> <Leader>lh :<C-u>CocList helptags<cr>
-nnoremap <silent> <Leader>le :<C-u>CocList locationlist<cr>
+nnoremap <silent> <Leader>le :<C-u>CocList diagnostics<cr>
 
 
 " asynctasks
@@ -273,3 +257,24 @@ function g:Undotree_CustomMap()
 endfunc
 
 let g:undotree_HelpLine=0
+
+" easymotion
+autocmd User EasyMotionPromptBegin silent! CocDisable
+autocmd User EasyMotionPromptEnd silent! CocEnable
+
+" incsearch
+nnoremap <Esc><Esc> :<C-u>nohlsearch<CR>
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+map z/ <Plug>(incsearch-easymotion-/)
+map z? <Plug>(incsearch-easymotion-?)
+map zg/ <Plug>(incsearch-easymotion-stay)
